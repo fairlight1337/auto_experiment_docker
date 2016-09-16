@@ -6,26 +6,23 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-roslisp-rep
 
 RUN useradd -m -d /home/experiment -p experiment experiment && chsh -s /bin/bash experiment
 
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 ENV HOME /home/experiment
 USER experiment
 
 # rosdep is already initialized in the ros:indigo-robot base image
 RUN rosdep update
 
+
 RUN mkdir -p ~/workspace/ros_kb/src
-RUN cd ~/workspace/ros_kb
-RUN catkin_make
-RUN source devel/setup.bash
+RUN /bin/bash -c "source /opt/ros/indigo/setup.bash; cd ~/workspace/ros_kb; catkin_make"
 
 RUN mkdir -p ~/workspace/ros_lisp/src
-RUN cd ~/workspace/ros_lisp
-RUN catkin_make
-RUN source devel/setup.bash
+RUN /bin/bash -c "source ~/workspace/ros_kb/devel/setup.bash; cd ~/workspace/ros_lisp; catkin_make"
 
 RUN mkdir -p ~/workspace/ros_top/src
-RUN cd ~/workspace/ros_top
-RUN catkin_make
-RUN source devel/setup.bash
+RUN /bin/bash -c "source ~/workspace/ros_lisp/devel/setup.bash;cd ~/workspace/ros_top;  catkin_make"
 
 echo "source $HOME/workspace/ros_top/devel/setup.bash" >> ~/.bashrc
 
