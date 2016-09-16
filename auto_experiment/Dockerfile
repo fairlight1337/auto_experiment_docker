@@ -5,15 +5,21 @@ USER root
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-rosjava ros-indigo-data-vis-msgs ros-indigo-json-prolog-msgs swi-prolog swi-prolog-java libjson-glib-1.0-0 libjson-glib-1.0-common libjson-glib-dev ros-indigo-ivcon ros-indigo-map-server ros-indigo-pr2-mechanism-msgs ros-indigo-pr2-moveit-config ros-indigo-pr2-msgs libbullet-dev ros-indigo-move-base-msgs
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-mjpeg-server ros-indigo-rosbridge-server
+
 USER experiment
 RUN rosdep update
 
 RUN /bin/bash -c "cd ~/workspace/ros_kb/src && \
     wstool init && \
-    wstool merge https://raw.github.com/knowrob/knowrob/master/rosinstall/knowrob-base.rosinstall && \
+    wstool set -y stacks/knowrob --git https://github.com/knowrob/knowrob.git --version=robohow && \
+    wstool set -y stacks/knowrob_addons --git https://github.com/knowrob/knowrob_addons.git --version=robohow && \
+    wstool set -y iai_cad_tools --git https://github.com/code-iai/iai_cad_tools.git && \
+    wstool set -y iai_common_msgs --git https://github.com/code-iai/iai_common_msgs.git && \
     wstool update && \
-    rosdep install --ignore-src --from-paths stacks/ && \
-    touch ~/workspace/ros_kb/src/stacks/knowrob/knowrob_vis/CATKIN_IGNORE"
+    source ~/workspace/ros_kb/devel/setup.bash && \
+    rospack profile && \
+    rosdep install --ignore-src --from-paths stacks/"
 
 RUN /bin/bash -c "cd ~/workspace/ros_kb && \
     source ~/workspace/ros_kb/devel/setup.bash && \
