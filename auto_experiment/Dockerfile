@@ -48,9 +48,8 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     wstool set -y cram_giskard_manager --git https://github.com/mpomarlan/cram_giskard_manager && \
     wstool set -y cl_giskard --git https://github.com/SemRoCo/cl_giskard && \
     wstool set -y giskard_msgs --git https://github.com/SemRoCo/giskard_msgs && \
-    wstool set -y giskard --git https://github.com/SemRoCo/giskard && \
-    wstool set -y qpoases --git https://github.com/SemRoCo/qpOASES && \
-    wstool set -y expressiongraph --git https://github.com/SemRoCo/expressiongraph && \
+    wstool update && \
+    cd ~/workspace/ros_top/src && \
     wstool set -y designator_integration --git https://github.com/code-iai/designator_integration.git && \
     wstool update
 
@@ -65,25 +64,23 @@ USER experiment
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_lisp && \
-    rosdep install --ignore-src --from-paths src/
-
-RUN source ~/workspace/ros_top/devel/setup.bash && \
-    cd ~/workspace/ros_lisp && \
     catkin_make
+
+USER root
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-interactive-markers libncurses5-dev automake autoconf libconfig++8-dev libjson0-dev
+USER experiment
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_top && \
     catkin_make --pkg designator_integration_cpp && \
     cd ~/workspace/ros_top/src && \
+    rospack profile && \
     wstool set -y semrec --git https://github.com/code-iai/semrec.git && \
     wstool set -y auto_experimenter --git https://github.com/code-iai/auto_experimenter.git && \
-    wstool update && \
-    cd .. && \
-    catkin_make -j1
+    wstool update
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
-    cd ~/workspace/ros_top && \
-    rospack profile && \
-    catkin_make -j1 && \
-    export | grep ROS && \
-    rosrun semrec semrec
+    cd ~/workspace/ros_lisp && \
+    catkin_make
+
+CMD ["echo", "All done."]
