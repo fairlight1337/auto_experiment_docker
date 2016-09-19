@@ -76,11 +76,12 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_top/src && \
     rospack profile && \
     wstool set -y semrec --git https://github.com/code-iai/semrec.git && \
+    wstool set -y semrec_plugins --git https://github.com/code-iai/semrec_plugins.git && \
     wstool set -y auto_experimenter --git https://github.com/code-iai/auto_experimenter.git && \
     wstool update
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
-    cd ~/workspace/ros_lisp && \
+    cd ~/workspace/ros_top && \
     catkin_make
 
 CMD ["echo", "All done."]
