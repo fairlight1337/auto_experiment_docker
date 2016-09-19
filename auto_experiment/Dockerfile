@@ -60,7 +60,7 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
 
 USER root
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-convex-decomposition ros-indigo-pr2-moveit-plugins libconfig++-dev libconfig++9
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y libgsl0 libgsl0-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y libgsl0-dev ros-indigo-household-objects-database-msgs
 USER experiment
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
@@ -69,7 +69,7 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_lisp && \
-    catkin_make -j1
+    catkin_make
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_top && \
