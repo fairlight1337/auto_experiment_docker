@@ -67,7 +67,7 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     catkin_make
 
 USER root
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-interactive-markers libncurses5-dev automake autoconf libconfig++8-dev libjson0-dev
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-interactive-markers libncurses5-dev automake autoconf libconfig++8-dev libjson0-dev mongodb-dev mongodb-clients
 USER experiment
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
@@ -76,7 +76,10 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_top/src && \
     rospack profile && \
     wstool set -y semrec --git https://github.com/code-iai/semrec.git && \
+    wstool set -y sr_plugin_knowrob --git https://github.com/code-iai/sr_plugin_knowrob.git && \
     wstool set -y semrec_plugins --git https://github.com/code-iai/semrec_plugins.git && \
+    wstool set -y mongodb_log --git https://github.com/code-iai/ros-mongodb_log && \
+    wstool set -y nav_pcontroller --git https://github.com/code-iai/nav_pcontroller && \
     wstool set -y auto_experimenter --git https://github.com/code-iai/auto_experimenter.git && \
     wstool update
 
@@ -84,4 +87,5 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_top && \
     catkin_make
 
-CMD ["echo", "All done."]
+
+CMD ["echo", "Raw auto_experimenter base image. No functionality here."]
