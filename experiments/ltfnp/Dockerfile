@@ -19,7 +19,7 @@ USER experiment
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_top/src && \
-    wstool set -y longterm_fetch_and_place --git https://github.com/code-iai/longterm_fetch_and_place.git --version=plan-semantics && \
+    wstool set -y longterm_fetch_and_place --git https://github.com/code-iai/longterm_fetch_and_place.git --version=master && \
     wstool update
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
