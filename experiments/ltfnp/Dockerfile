@@ -7,6 +7,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-gazebo-ros
 USER experiment
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
+    cd ~/workspace/ros_lisp/src/cram_moveit && git checkout on-event && \
     cd ~/workspace/ros_top/src && \
     wstool set -y cram_beliefstate --git https://github.com/cram2/cram_beliefstate --version=metadata && \
     wstool set -y cram_gazebo --git https://github.com/cram2/cram_gazebo.git --version=scene-observation && \
@@ -26,16 +27,23 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_top && \
     catkin_make
 
-RUN export DISPLAY=:0.0 && \
-    Xvfb :0 -screen 0 1024x768x16 & \
-    sleep 2 && \
-    DISPLAY=:0.0 xhost + && \
-    cd ~/workspace/ros_top/src/longterm_fetch_and_place/ltfnp_executive/scripts && \
-    source ~/workspace/ros_top/devel/setup.bash && \
-    DISPLAY=:0.0 ./init.sh
+ADD dummy.xorg.conf /
+ADD init_wrapper.sh /
+
+USER root
+RUN sudo -E apt-get -y -qq install mesa-utils xserver-xorg-video-dummy xvfb
+
+RUN export DISPLAY=:0 && \
+    sudo -E Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config /dummy.xorg.conf $DISPLAY & \
+    sleep 3 && \
+    DISPLAY=:0 glxinfo | grep GLX && \
+    export QT_X11_NO_MITSHM=1 && \
+    cd / && chmod 0777 init_wrapper.sh && sudo -H -u experiment ./init_wrapper.sh
+
+RUN rm /tmp/.X0-lock
 
 ADD start.sh /
 
-RUN /bin/bash -c "/start.sh init"
+ENTRYPOINT ["/bin/bash", "-c", "/start.sh ${*}", "--"]
 
-ENTRYPOINT ["/bin/bash", "/start.sh"]
+EXPOSE 11311 11312

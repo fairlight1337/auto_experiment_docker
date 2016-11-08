@@ -5,10 +5,14 @@ USER root
 
 RUN rm /bin/sh && ln -sf /bin/bash /bin/sh
 
+ENV PATH /usr/local/nvidia/bin:${PATH}
+ENV LD_LIBRARY_PATH /usr/local/nvidia/lib:/usr/local/nvidia/lib64:${LD_LIBRARY_PATH}
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-rosjava ros-indigo-data-vis-msgs ros-indigo-json-prolog-msgs swi-prolog swi-prolog-java libjson-glib-1.0-0 libjson-glib-1.0-common libjson-glib-dev ros-indigo-ivcon ros-indigo-map-server ros-indigo-pr2-mechanism-msgs ros-indigo-pr2-moveit-config ros-indigo-pr2-msgs libbullet-dev ros-indigo-move-base-msgs
+RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-rosjava ros-indigo-data-vis-msgs ros-indigo-json-prolog-msgs swi-prolog swi-prolog-java libjson-glib-1.0-0 libjson-glib-1.0-common libjson-glib-dev ros-indigo-ivcon ros-indigo-map-server ros-indigo-pr2-mechanism-msgs ros-indigo-pr2-moveit-config ros-indigo-pr2-msgs libbullet-dev ros-indigo-move-base-msgs ros-indigo-moveit-full-pr2 libompl-dev libompl7
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -qq install -y ros-indigo-mjpeg-server ros-indigo-rosbridge-server
+
+ENV LD_LIBRARY_PATH /opt/ros/indigo/lib/x86_64-linux-gnu/:$LD_LIBRARY_PATH
 
 USER experiment
 RUN rosdep update
@@ -24,8 +28,8 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
 RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_kb/src && \
     rospack profile && \
-    wstool set -y stacks/knowrob --git https://github.com/knowrob/knowrob.git --version=robohow && \
-    wstool set -y stacks/knowrob_addons --git https://github.com/knowrob/knowrob_addons.git --version=robohow && \
+    wstool set -y stacks/knowrob --git https://github.com/knowrob/knowrob.git --version=master && \
+    wstool set -y stacks/knowrob_addons --git https://github.com/knowrob/knowrob_addons.git --version=master && \
     wstool update
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
@@ -34,6 +38,7 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     touch ~/workspace/ros_kb/src/stacks/knowrob_addons/knowrob_openease/CATKIN_IGNORE && \
     touch ~/workspace/ros_kb/src/stacks/knowrob_addons/knowrob_roslog_launch/CATKIN_IGNORE && \
     touch ~/workspace/ros_kb/src/stacks/knowrob_addons/knowrob_chemlab/CATKIN_IGNORE && \
+    touch ~/workspace/ros_kb/src/stacks/knowrob_addons/knowrob_robcog/CATKIN_IGNORE && \
     touch ~/workspace/ros_kb/src/stacks/knowrob_addons/knowrob_sim_games/CATKIN_IGNORE
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
@@ -43,9 +48,6 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
 RUN source ~/workspace/ros_top/devel/setup.bash && \
     cd ~/workspace/ros_lisp/src && \
     wstool merge https://raw.githubusercontent.com/cram2/cram_projection_demos/master/cram-with-projection.rosinstall && \
-    wstool set -y cram_motion_manager --git https://github.com/mpomarlan/cram_motion_manager && \
-    wstool set -y cram_moveit_manager --git https://github.com/mpomarlan/cram_moveit_manager && \
-    wstool set -y cram_giskard_manager --git https://github.com/mpomarlan/cram_giskard_manager && \
     wstool set -y cl_giskard --git https://github.com/SemRoCo/cl_giskard && \
     wstool set -y giskard_msgs --git https://github.com/SemRoCo/giskard_msgs && \
     wstool update && \
