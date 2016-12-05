@@ -82,7 +82,7 @@ RUN source ~/workspace/ros_top/devel/setup.bash && \
     wstool set -y semrec_plugins --git https://github.com/code-iai/semrec_plugins.git && \
     wstool set -y mongodb_log --git https://github.com/code-iai/ros-mongodb_log && \
     wstool set -y nav_pcontroller --git https://github.com/code-iai/nav_pcontroller && \
-    wstool set -y auto_experimenter --git https://github.com/code-iai/auto_experimenter.git && \
+    wstool set  -y auto_experimenter --git https://github.com/code-iai/auto_experimenter.git  --version=master    && \
     wstool update
 
 RUN source ~/workspace/ros_top/devel/setup.bash && \
